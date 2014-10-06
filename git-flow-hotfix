@@ -248,6 +248,7 @@ cmd_finish() {
 	DEFINE_boolean push false "push to $ORIGIN after performing finish" p
 	DEFINE_boolean keep false "keep branch after performing finish" k
 	DEFINE_boolean notag false "don't tag this release" n
+	DEFINE_boolean ff_only false "ff-only feature during merge" o
 	parse_args "$@"
 	require_version_arg
 
