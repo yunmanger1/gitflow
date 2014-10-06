@@ -278,9 +278,14 @@ cmd_finish() {
 	if ! git_is_branch_merged_into "$BRANCH" "$MASTER_BRANCH"; then
 		git_do checkout "$MASTER_BRANCH" || \
 		  die "Could not check out $MASTER_BRANCH."
-		git_do merge --no-ff "$BRANCH" || \
-		  die "There were merge conflicts."
-		  # TODO: What do we do now?
+		if flag ff_only; then
+			git_do merge --ff "$BRANCH" || \
+			  die "Could not do ff merge."
+		else
+			git_do merge --no-ff "$BRANCH" || \
+			  die "There were merge conflicts."
+			  # TODO: What do we do now?
+		fi
 	fi
 
 	if noflag notag; then
@@ -305,12 +310,16 @@ cmd_finish() {
 	if ! git_is_branch_merged_into "$BRANCH" "$DEVELOP_BRANCH"; then
 		git_do checkout "$DEVELOP_BRANCH" || \
 		  die "Could not check out $DEVELOP_BRANCH."
-
-		# TODO: Actually, accounting for 'git describe' pays, so we should
-		# ideally git merge --no-ff $tagname here, instead!
-		git_do merge --no-ff "$BRANCH" || \
-		  die "There were merge conflicts."
-		  # TODO: What do we do now?
+		if flag ff_only; then
+			git_do merge --ff "$BRANCH" || \
+			  die "Could not do ff merge."
+		else
+			# TODO: Actually, accounting for 'git describe' pays, so we should
+			# ideally git merge --no-ff $tagname here, instead!
+			git_do merge --no-ff "$BRANCH" || \
+			  die "There were merge conflicts."
+			  # TODO: What do we do now?
+		fi
 	fi
 
 	# delete branch
